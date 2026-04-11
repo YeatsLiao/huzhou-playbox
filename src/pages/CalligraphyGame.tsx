@@ -27,7 +27,8 @@ export default function CalligraphyGame() {
   
   // 湖州名诗：《吴兴杂诗》 - 阮元
   const poem = "交流四水抱城斜，散作千溪遍万家。深处种菱浅种稻，不深不浅种荷花。";
-  const [poemCharacters] = useState<string[]>(poem.split(''));
+  // 过滤掉标点符号，只保留汉字
+  const [poemCharacters] = useState<string[]>(poem.split('').filter(char => /[\u4e00-\u9fa5]/.test(char)));
 
   // 初始化游戏
   useEffect(() => {
@@ -98,14 +99,13 @@ export default function CalligraphyGame() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas) {
-      // 获取窗口尺寸，减去顶部导航栏高度
-      const windowHeight = window.innerHeight - 100; // 100px 用于顶部导航栏
-      const windowWidth = window.innerWidth - 40; // 40px 用于左右边距
-      
-      // 设置画布大小为窗口的大部分区域
-      canvas.width = windowWidth;
-      canvas.height = windowHeight * 0.8; // 留一些空间给控制按钮
-      drawBackground();
+      // 获取容器尺寸
+      const container = canvas.parentElement;
+      if (container) {
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+        drawBackground();
+      }
     }
   }, [currentCharacter]);
 
@@ -273,7 +273,7 @@ export default function CalligraphyGame() {
   };
 
   return (
-    <div className="min-h-screen bg-amber-50 font-pixel overflow-hidden">
+    <div className="min-h-screen bg-amber-50 font-pixel">
       {/* 游戏状态 */}
       <div className="fixed top-0 left-0 w-full p-4 bg-amber-800 text-white flex justify-between items-center z-10">
         <div className="text-xl font-bold">湖笔书法挑战</div>
@@ -290,8 +290,8 @@ export default function CalligraphyGame() {
       </div>
 
       {/* 游戏区域 */}
-      <div className="w-full h-screen pt-20">
-        <div className="flex flex-col items-center h-full">
+      <div className="w-full pt-20 pb-10">
+        <div className="flex flex-col items-center">
           {/* 游戏说明和名诗 */}
           {!gameOver && (
             <div className="bg-white rounded-lg border-4 border-gray-800 shadow-lg p-6 mb-4 w-full max-w-4xl text-center">
@@ -318,22 +318,24 @@ export default function CalligraphyGame() {
           )}
 
           {/* 画布 */}
-          <div className="border-4 border-gray-800 bg-white p-4 mb-4 w-full mx-4 flex-grow">
-            <canvas
-              ref={canvasRef}
-              className="border-2 border-gray-300 bg-[#F5E6D3] cursor-crosshair w-full h-full"
-              onMouseDown={startDrawing}
-              onMouseMove={draw}
-              onMouseUp={stopDrawing}
-              onMouseLeave={stopDrawing}
-              onTouchStart={startDrawing}
-              onTouchMove={draw}
-              onTouchEnd={stopDrawing}
-            ></canvas>
+          <div className="border-4 border-gray-800 bg-white p-4 mb-6 w-full mx-4 max-w-4xl">
+            <div className="relative" style={{ height: '60vh' }}>
+              <canvas
+                ref={canvasRef}
+                className="border-2 border-gray-300 bg-[#F5E6D3] cursor-crosshair w-full h-full"
+                onMouseDown={startDrawing}
+                onMouseMove={draw}
+                onMouseUp={stopDrawing}
+                onMouseLeave={stopDrawing}
+                onTouchStart={startDrawing}
+                onTouchMove={draw}
+                onTouchEnd={stopDrawing}
+              ></canvas>
+            </div>
           </div>
 
           {/* 控制按钮 */}
-          <div className="flex flex-wrap justify-center space-x-4 mb-4">
+          <div className="flex flex-wrap justify-center space-x-4 mb-6 w-full max-w-4xl">
             <button
               className="bg-amber-500 hover:bg-amber-700 text-white font-bold py-2 px-6 rounded border-2 border-amber-700"
               onClick={clearCanvas}
