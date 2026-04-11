@@ -187,40 +187,40 @@ export default function FishingGame() {
       setNet(prev => ({ ...prev, active: true, size: 0 }));
       
       // 渔网展开动画
+      let netSize = 0;
       const netAnimation = setInterval(() => {
-        setNet(prev => {
-          if (prev.size < tools.net.range * 2) {
-            return { ...prev, size: prev.size + 5 };
-          } else {
-            clearInterval(netAnimation);
-            return prev;
-          }
-        });
-      }, 20);
-
-      // 检测是否网到鱼
-      setTimeout(() => {
-        setFishes(prevFishes => {
-          return prevFishes.filter(fish => {
-            const distance = Math.sqrt(
-              Math.pow(clickX - fish.x, 2) + Math.pow(clickY - fish.y, 2)
-            );
-            
-            if (distance < tools.net.range) {
-              setScore(prev => prev + fish.score);
-              setCaughtFishes(prev => [...prev, fish.id]);
-              createWaveEffect(fish.x, fish.y);
-              return false; // 移除被捕获的鱼
-            }
-            return true;
-          });
-        });
+        netSize += 5;
+        setNet(prev => ({
+          ...prev,
+          size: netSize
+        }));
         
-        // 收起渔网
-        setTimeout(() => {
-          setNet(prev => ({ ...prev, active: false, size: 0 }));
-        }, 500);
-      }, 300);
+        if (netSize >= tools.net.range * 2) {
+          clearInterval(netAnimation);
+          
+          // 当渔网完全展开时检测鱼
+          setFishes(prevFishes => {
+            return prevFishes.filter(fish => {
+              const distance = Math.sqrt(
+                Math.pow(clickX - fish.x, 2) + Math.pow(clickY - fish.y, 2)
+              );
+              
+              if (distance < tools.net.range) {
+                setScore(prev => prev + fish.score);
+                setCaughtFishes(prev => [...prev, fish.id]);
+                createWaveEffect(fish.x, fish.y);
+                return false; // 移除被捕获的鱼
+              }
+              return true;
+            });
+          });
+          
+          // 收起渔网
+          setTimeout(() => {
+            setNet(prev => ({ ...prev, active: false, size: 0 }));
+          }, 500);
+        }
+      }, 20);
     }
 
     // 定期添加新鱼
