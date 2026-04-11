@@ -23,8 +23,8 @@ export default function MazeGame() {
   const [showScoreInput, setShowScoreInput] = useState(false);
 
   // 迷宫大小
-  const mazeWidth = 25;
-  const mazeHeight = 20;
+  const mazeWidth = 35;
+  const mazeHeight = 25;
 
   // 生成迷宫
   const generateMaze = useCallback(() => {
@@ -203,7 +203,36 @@ export default function MazeGame() {
   };
 
   return (
-    <div className="min-h-screen bg-green-100 font-pixel">
+    <div className="min-h-screen bg-green-100 font-pixel relative overflow-hidden">
+      {/* 背景装饰 - 竹林效果 */}
+      <div className="fixed inset-0 z-0 opacity-20">
+        {/* 竹子图案 */}
+        {Array.from({ length: 20 }).map((_, index) => (
+          <div 
+            key={index}
+            className="absolute bottom-0"
+            style={{
+              left: `${Math.random() * 100}%`,
+              width: '4px',
+              height: `${Math.random() * 300 + 200}px`,
+              backgroundColor: '#2e7d32',
+              borderRadius: '2px 2px 0 0'
+            }}
+          >
+            {/* 竹叶 */}
+            <div 
+              className="absolute top-0 left-1/2 transform -translate-x-1/2"
+              style={{
+                width: '60px',
+                height: '60px',
+                backgroundColor: '#4caf50',
+                clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)'
+              }}
+            ></div>
+          </div>
+        ))}
+      </div>
+
       {/* 游戏状态 */}
       <div className="fixed top-0 left-0 w-full p-4 bg-green-800 text-white flex justify-between items-center z-10">
         <div className="text-xl font-bold">莫干山竹林探险</div>
@@ -220,7 +249,7 @@ export default function MazeGame() {
       </div>
 
       {/* 游戏区域 */}
-      <div className="container mx-auto px-4 py-20">
+      <div className="container mx-auto px-4 py-20 relative z-10">
         <div className="flex flex-col items-center">
           {/* 游戏说明 */}
           {!gameStarted && !gameOver && (
@@ -238,35 +267,56 @@ export default function MazeGame() {
 
           {/* 迷宫 */}
           <div 
-            className="border-4 border-gray-800 bg-green-500 p-2 overflow-auto"
+            className="border-4 border-gray-800 bg-green-500 p-4 mb-8"
             style={{ 
               display: 'grid',
-              gridTemplateColumns: `repeat(${mazeWidth}, 25px)`,
+              gridTemplateColumns: `repeat(${mazeWidth}, minmax(15px, 1fr))`,
               gap: '2px',
-              maxWidth: '90vw',
-              maxHeight: '70vh'
+              width: '90vw',
+              maxWidth: '1000px',
+              height: '60vh'
             }}
           >
             {maze.map((row, y) => 
               row.map((cell, x) => {
                 const isPlayer = x === playerPosition.x && y === playerPosition.y;
                 let cellClass = '';
+                let cellStyle = {};
                 
                 if (isPlayer) {
-                  cellClass = 'bg-yellow-400';
+                  cellClass = 'bg-yellow-400 rounded-full';
+                  cellStyle = {
+                    boxShadow: '0 0 10px rgba(255, 200, 0, 0.8)',
+                    backgroundImage: 'radial-gradient(circle, #ffd700, #ffb347)'
+                  };
                 } else {
                   switch (cell) {
                     case 'wall':
                       cellClass = 'bg-green-800';
+                      cellStyle = {
+                        backgroundImage: 'linear-gradient(to bottom, #2e7d32, #1b5e20)',
+                        boxShadow: 'inset 0 0 5px rgba(0, 0, 0, 0.3)'
+                      };
                       break;
                     case 'path':
                       cellClass = 'bg-green-300';
+                      cellStyle = {
+                        backgroundImage: 'linear-gradient(to bottom, #81c784, #4caf50)'
+                      };
                       break;
                     case 'start':
                       cellClass = 'bg-blue-500';
+                      cellStyle = {
+                        backgroundImage: 'linear-gradient(to bottom, #42a5f5, #1976d2)',
+                        boxShadow: '0 0 10px rgba(33, 150, 243, 0.8)'
+                      };
                       break;
                     case 'end':
                       cellClass = 'bg-red-500';
+                      cellStyle = {
+                        backgroundImage: 'linear-gradient(to bottom, #ef5350, #c62828)',
+                        boxShadow: '0 0 10px rgba(244, 67, 54, 0.8)'
+                      };
                       break;
                   }
                 }
@@ -274,7 +324,8 @@ export default function MazeGame() {
                 return (
                   <div 
                     key={`${x}-${y}`}
-                    className={`w-7 h-7 ${cellClass} rounded-sm`}
+                    className={cellClass}
+                    style={cellStyle}
                   ></div>
                 );
               })
