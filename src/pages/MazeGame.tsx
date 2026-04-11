@@ -238,13 +238,14 @@ export default function MazeGame() {
 
           {/* 迷宫 */}
           <div 
-            className="border-4 border-gray-800 bg-green-500 p-2 overflow-auto"
+            className="border-4 border-gray-800 bg-green-500 p-4 mb-8"
             style={{ 
               display: 'grid',
-              gridTemplateColumns: `repeat(${mazeWidth}, 25px)`,
+              gridTemplateColumns: `repeat(${mazeWidth}, minmax(20px, 1fr))`,
               gap: '2px',
-              maxWidth: '90vw',
-              maxHeight: '70vh'
+              width: '90vw',
+              maxWidth: '1000px',
+              height: '60vh'
             }}
           >
             {maze.map((row, y) => 
