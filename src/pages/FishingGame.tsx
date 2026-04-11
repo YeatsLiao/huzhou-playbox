@@ -71,12 +71,12 @@ export default function FishingGame() {
           let newX = fish.direction === 'left' ? fish.x - fish.speed : fish.x + fish.speed;
           let newY = fish.y + (Math.sin(Date.now() / 1000 + fish.id) * 0.5);
           
-          // 边界检测
-          if (newX < -100) {
-            newX = window.innerWidth + 100;
+          // 边界检测 - 确保鱼在可视区域内
+          if (newX < -50) {
+            newX = window.innerWidth + 50;
             fish.direction = 'left';
-          } else if (newX > window.innerWidth + 100) {
-            newX = -100;
+          } else if (newX > window.innerWidth + 50) {
+            newX = -50;
             fish.direction = 'right';
           }
           
@@ -275,7 +275,7 @@ export default function FishingGame() {
   return (
     <div 
       ref={gameRef}
-      className="min-h-screen bg-gradient-to-b from-blue-300 to-blue-500 cursor-none"
+      className="min-h-screen bg-gradient-to-b from-blue-300 to-blue-500 cursor-none overflow-hidden"
       onClick={handleClick}
       onMouseMove={handleMouseMove}
     >
