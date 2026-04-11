@@ -27,12 +27,15 @@ export default function CalligraphyGame() {
   
   // 湖州名诗：《吴兴杂诗》 - 阮元
   const poem = "交流四水抱城斜，散作千溪遍万家。深处种菱浅种稻，不深不浅种荷花。";
-  // 过滤掉标点符号，只保留汉字
-  const [poemCharacters] = useState<string[]>(poem.split('').filter(char => /[\u4e00-\u9fa5]/.test(char)));
+  const [poemCharacters] = useState<string[]>(poem.split(''));
 
   // 初始化游戏
   useEffect(() => {
-    const randomChar = poemCharacters[Math.floor(Math.random() * poemCharacters.length)];
+    // 确保随机选择的是汉字，不是标点符号
+    let randomChar;
+    do {
+      randomChar = poemCharacters[Math.floor(Math.random() * poemCharacters.length)];
+    } while (!/[\u4e00-\u9fa5]/.test(randomChar));
     setCurrentCharacter(randomChar);
     clearCanvas();
   }, []);
@@ -182,7 +185,7 @@ export default function CalligraphyGame() {
 
   // 评分
   const calculateScore = () => {
-    // 简单的评分逻辑：根据笔画数量和画布覆盖率
+    // 宽松的评分逻辑：根据笔画数量和画布覆盖率
     const canvas = canvasRef.current;
     if (canvas) {
       const ctx = canvas.getContext('2d');
@@ -198,7 +201,7 @@ export default function CalligraphyGame() {
           const b = data[i + 2];
           const a = data[i + 3];
           
-          if (a > 0 && r < 100 && g < 100 && b < 100) {
+          if (a > 0 && r < 150 && g < 150 && b < 150) {
             blackPixels++;
           }
         }
@@ -207,14 +210,17 @@ export default function CalligraphyGame() {
         const totalPixels = canvas.width * canvas.height;
         const coverage = (blackPixels / totalPixels) * 100;
         
-        // 计算得分（0-100）
-        let calculatedScore = Math.min(Math.round(coverage * 3), 100);
+        // 计算得分（0-100）- 更宽松的计算方式
+        let calculatedScore = Math.min(Math.round(coverage * 4), 100);
         
-        // 根据笔画数量调整得分
-        if (strokes.length < 2) {
-          calculatedScore = Math.max(calculatedScore - 30, 0);
-        } else if (strokes.length > 10) {
-          calculatedScore = Math.max(calculatedScore - 20, 0);
+        // 确保最低分数
+        calculatedScore = Math.max(calculatedScore, 60);
+        
+        // 根据笔画数量调整得分 - 更宽松
+        if (strokes.length < 1) {
+          calculatedScore = Math.max(calculatedScore - 20, 50);
+        } else if (strokes.length > 15) {
+          calculatedScore = Math.max(calculatedScore - 10, 50);
         }
         
         setScore(calculatedScore);
@@ -261,15 +267,22 @@ export default function CalligraphyGame() {
 
   // 重新开始
   const restartGame = () => {
-    const randomChar = poemCharacters[Math.floor(Math.random() * poemCharacters.length)];
+    // 确保随机选择的是汉字，不是标点符号
+    let randomChar;
+    do {
+      randomChar = poemCharacters[Math.floor(Math.random() * poemCharacters.length)];
+    } while (!/[\u4e00-\u9fa5]/.test(randomChar));
     setCurrentCharacter(randomChar);
     clearCanvas();
   };
 
   // 选择指定字符
   const selectCharacter = (char: string) => {
-    setCurrentCharacter(char);
-    clearCanvas();
+    // 只有汉字可以被选择，标点符号不能被点击
+    if (/[\u4e00-\u9fa5]/.test(char)) {
+      setCurrentCharacter(char);
+      clearCanvas();
+    }
   };
 
   return (
