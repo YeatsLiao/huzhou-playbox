@@ -242,15 +242,17 @@ export default function MazeGame() {
             style={{ 
               width: '90vw',
               maxWidth: '1000px',
-              height: '60vh',
-              overflow: 'auto'
+              height: '60vh'
             }}
           >
             <div
               style={{ 
                 display: 'grid',
-                gridTemplateColumns: `repeat(${mazeWidth}, 25px)`,
-                gap: '2px'
+                gridTemplateColumns: `repeat(${mazeWidth}, 1fr)`,
+                gridTemplateRows: `repeat(${mazeHeight}, 1fr)`,
+                gap: '2px',
+                width: '100%',
+                height: '100%'
               }}
             >
             {maze.map((row, y) => 
@@ -280,7 +282,7 @@ export default function MazeGame() {
                 return (
                   <div 
                     key={`${x}-${y}`}
-                    className={`w-7 h-7 ${cellClass} rounded-sm`}
+                    className={`${cellClass} rounded-sm`}
                   ></div>
                 );
               })
