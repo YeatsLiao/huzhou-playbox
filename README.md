@@ -1,57 +1,122 @@
-# React + TypeScript + Vite
+# 湖州创意互动小游戏
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+这是一个基于 React + TypeScript + Vite 开发的湖州主题互动小游戏集合，包含三个特色游戏：太湖捕鱼、莫干山竹林探险和湖笔书法挑战。
 
-Currently, two official plugins are available:
+## 🎮 游戏说明
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 1. 太湖捕鱼
+- **玩法**：点击屏幕上的鱼群来捕获它们，不同大小的鱼有不同的分值
+- **规则**：游戏时间为60秒，时间结束后显示最终得分
+- **特色**：融入湖州太湖元素，体验捕鱼乐趣
 
-## Expanding the ESLint configuration
+### 2. 莫干山竹林探险
+- **玩法**：使用方向键或WASD控制角色在竹林迷宫中移动，找到出口
+- **规则**：记录完成迷宫的时间，挑战最佳成绩
+- **特色**：以莫干山竹林为背景，体验探险的乐趣
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 3. 湖笔书法挑战
+- **玩法**：在宣纸上用鼠标或触摸书写指定的汉字，系统会根据笔画流畅度和相似度进行评分
+- **规则**：完成后可以保存作品并查看得分
+- **特色**：融入湖州湖笔文化，体验书法艺术的魅力
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 🛠️ 技术栈
+
+- **前端框架**：React 18.3.1
+- **开发语言**：TypeScript
+- **构建工具**：Vite 6.3.5
+- **样式方案**：Tailwind CSS 3.4.17
+- **路由管理**：React Router 7.3.0
+- **状态管理**：Zustand 5.0.3
+- **图标库**：Lucide React
+- **工具库**：clsx, tailwind-merge
+
+## 📦 安装和运行
+
+### 环境要求
+- Node.js 18.0 或更高版本
+- npm 或 yarn 包管理器
+
+### 安装步骤
+
+1. **克隆项目**
+```bash
+git clone <repository-url>
+cd workspace
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  extends: [
-    // other configs...
-    // Enable lint rules for React
-    reactX.configs['recommended-typescript'],
-    // Enable lint rules for React DOM
-    reactDom.configs.recommended,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+2. **安装依赖**
+```bash
+npm install
 ```
+
+3. **启动开发服务器**
+```bash
+npm run dev
+```
+
+4. **构建生产版本**
+```bash
+npm run build
+```
+
+5. **预览生产版本**
+```bash
+npm run preview
+```
+
+## 📁 项目结构
+
+```
+/workspace/
+├── public/           # 静态资源
+├── src/
+│   ├── assets/       # 资源文件
+│   ├── components/   # 通用组件
+│   ├── hooks/        # 自定义钩子
+│   ├── lib/          # 工具函数
+│   ├── pages/        # 页面组件
+│   │   ├── Home.tsx              # 首页
+│   │   ├── FishingGame.tsx       # 太湖捕鱼游戏
+│   │   ├── MazeGame.tsx          # 莫干山竹林探险游戏
+│   │   └── CalligraphyGame.tsx   # 湖笔书法挑战游戏
+│   ├── App.tsx       # 应用入口
+│   └── main.tsx      # 主入口
+├── .gitignore        # Git忽略文件
+├── package.json      # 项目配置
+├── tailwind.config.js # Tailwind配置
+└── vite.config.ts    # Vite配置
+```
+
+## ✨ 功能特点
+
+- **响应式设计**：适配不同屏幕尺寸，支持PC端和移动端
+- **像素风格**：采用复古像素风格，视觉效果独特
+- **本地存储**：游戏得分自动保存到本地存储，刷新页面后仍然保留
+- **游戏排行**：首页显示三个游戏的得分排行榜
+- **规则说明**：每个游戏都有详细的规则说明
+- **流畅动画**：游戏操作流畅，动画效果丰富
+
+## 🎨 设计特色
+
+- **湖州文化元素**：融入太湖、莫干山、湖笔等湖州特色文化元素
+- **像素艺术风格**：采用复古像素风格，营造怀旧游戏氛围
+- **色彩搭配**：每个游戏都有独特的色彩主题，符合游戏场景
+- **交互体验**：流畅的操作体验和直观的界面设计
+
+## 🤝 贡献指南
+
+欢迎对项目进行贡献！如果您有任何建议或改进， please feel free to submit a pull request or open an issue.
+
+## 📄 许可证
+
+本项目采用 MIT 许可证。详见 [LICENSE](LICENSE) 文件。
+
+## 🌟 鸣谢
+
+- 感谢 React、TypeScript、Vite 等开源技术的支持
+- 感谢 Tailwind CSS 提供的样式方案
+- 感谢所有为项目做出贡献的开发者
+
+---
+
+**享受游戏，探索湖州文化！** 🎉
