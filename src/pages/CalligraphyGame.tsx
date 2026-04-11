@@ -233,7 +233,9 @@ export default function CalligraphyGame() {
         let calculatedScore = 0;
         
         if (strokes.length > 0) {
-          calculatedScore = Math.min(Math.round(coverage * 8), 98);
+          // 放宽标准，用更高的乘数或者直接加基础分
+          // coverage * 12 加上基础保底 40分，更容易获得高分
+          calculatedScore = Math.min(Math.round(coverage * 12) + 40, 98);
           // 稍微加点随机性，模拟"书法意境"
           calculatedScore += Math.floor(Math.random() * 5);
           calculatedScore = Math.min(calculatedScore, 100);
@@ -241,8 +243,8 @@ export default function CalligraphyGame() {
           // 根据笔画数量调整得分
           if (strokes.length < 1) {
             calculatedScore = 0;
-          } else if (strokes.length > 15) {
-            calculatedScore = Math.max(calculatedScore - 10, 10);
+          } else if (strokes.length > 25) { // 放宽笔画限制，原本是15
+            calculatedScore = Math.max(calculatedScore - 5, 10);
           }
         }
         

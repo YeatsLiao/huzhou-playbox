@@ -239,7 +239,7 @@ export default function MazeGame() {
       </div>
 
       {/* 游戏区域 */}
-      <div className="container mx-auto px-4 py-20">
+      <div className="container mx-auto px-4 pt-28 pb-20">
         <div className="flex flex-col items-center">
           {/* 游戏说明 */}
           {!gameStarted && !gameOver && (
