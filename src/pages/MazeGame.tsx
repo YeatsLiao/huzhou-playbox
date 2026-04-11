@@ -1,36 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
-// 添加CSS动画样式
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes sway {
-    0% {
-      transform: rotate(-1deg);
-    }
-    100% {
-      transform: rotate(1deg);
-    }
-  }
-  
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.05);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
-  
-  .player {
-    animation: pulse 2s ease-in-out infinite;
-  }
-`;
-document.head.appendChild(style);
-
 interface Position {
   x: number;
   y: number;
@@ -53,8 +23,8 @@ export default function MazeGame() {
   const [showScoreInput, setShowScoreInput] = useState(false);
 
   // 迷宫大小
-  const mazeWidth = 35;
-  const mazeHeight = 25;
+  const mazeWidth = 25;
+  const mazeHeight = 20;
 
   // 生成迷宫
   const generateMaze = useCallback(() => {
@@ -233,37 +203,7 @@ export default function MazeGame() {
   };
 
   return (
-    <div className="min-h-screen bg-green-100 font-pixel relative overflow-hidden">
-      {/* 背景装饰 - 竹林效果 */}
-      <div className="fixed inset-0 z-0 opacity-20">
-        {/* 竹子图案 */}
-        {Array.from({ length: 10 }).map((_, index) => (
-          <div 
-            key={index}
-            className="absolute bottom-0"
-            style={{
-              left: `${Math.random() * 100}%`,
-              width: '4px',
-              height: `${Math.random() * 200 + 150}px`,
-              backgroundColor: '#2e7d32',
-              borderRadius: '2px 2px 0 0',
-              animation: `sway ${Math.random() * 2 + 3}s ease-in-out infinite alternate`
-            }}
-          >
-            {/* 竹叶 */}
-            <div 
-              className="absolute top-0 left-1/2 transform -translate-x-1/2"
-              style={{
-                width: '40px',
-                height: '40px',
-                backgroundColor: '#4caf50',
-                clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)'
-              }}
-            ></div>
-          </div>
-        ))}
-      </div>
-
+    <div className="min-h-screen bg-green-100 font-pixel">
       {/* 游戏状态 */}
       <div className="fixed top-0 left-0 w-full p-4 bg-green-800 text-white flex justify-between items-center z-10">
         <div className="text-xl font-bold">莫干山竹林探险</div>
@@ -280,7 +220,7 @@ export default function MazeGame() {
       </div>
 
       {/* 游戏区域 */}
-      <div className="container mx-auto px-4 py-20 relative z-10">
+      <div className="container mx-auto px-4 py-20">
         <div className="flex flex-col items-center">
           {/* 游戏说明 */}
           {!gameStarted && !gameOver && (
@@ -298,77 +238,47 @@ export default function MazeGame() {
 
           {/* 迷宫 */}
           <div 
-            className="border-4 border-gray-800 bg-green-500 p-4 mb-8 relative"
+            className="border-4 border-gray-800 bg-green-500 p-2 overflow-auto"
             style={{ 
               display: 'grid',
-              gridTemplateColumns: `repeat(${mazeWidth}, minmax(15px, 1fr))`,
+              gridTemplateColumns: `repeat(${mazeWidth}, 25px)`,
               gap: '2px',
-              width: '90vw',
-              maxWidth: '1000px',
-              height: '60vh'
+              maxWidth: '90vw',
+              maxHeight: '70vh'
             }}
           >
-            {/* 渲染迷宫背景 */}
             {maze.map((row, y) => 
               row.map((cell, x) => {
+                const isPlayer = x === playerPosition.x && y === playerPosition.y;
                 let cellClass = '';
-                let cellStyle = {};
                 
-                switch (cell) {
-                  case 'wall':
-                    cellClass = 'bg-green-800';
-                    cellStyle = {
-                      backgroundImage: 'linear-gradient(to bottom, #2e7d32, #1b5e20)',
-                      boxShadow: 'inset 0 0 5px rgba(0, 0, 0, 0.3)'
-                    };
-                    break;
-                  case 'path':
-                    cellClass = 'bg-green-300';
-                    cellStyle = {
-                      backgroundImage: 'linear-gradient(to bottom, #81c784, #4caf50)'
-                    };
-                    break;
-                  case 'start':
-                    cellClass = 'bg-blue-500';
-                    cellStyle = {
-                      backgroundImage: 'linear-gradient(to bottom, #42a5f5, #1976d2)',
-                      boxShadow: '0 0 10px rgba(33, 150, 243, 0.8)'
-                    };
-                    break;
-                  case 'end':
-                    cellClass = 'bg-red-500';
-                    cellStyle = {
-                      backgroundImage: 'linear-gradient(to bottom, #ef5350, #c62828)',
-                      boxShadow: '0 0 10px rgba(244, 67, 54, 0.8)'
-                    };
-                    break;
+                if (isPlayer) {
+                  cellClass = 'bg-yellow-400';
+                } else {
+                  switch (cell) {
+                    case 'wall':
+                      cellClass = 'bg-green-800';
+                      break;
+                    case 'path':
+                      cellClass = 'bg-green-300';
+                      break;
+                    case 'start':
+                      cellClass = 'bg-blue-500';
+                      break;
+                    case 'end':
+                      cellClass = 'bg-red-500';
+                      break;
+                  }
                 }
                 
                 return (
                   <div 
                     key={`${x}-${y}`}
-                    className={cellClass}
-                    style={cellStyle}
+                    className={`w-7 h-7 ${cellClass} rounded-sm`}
                   ></div>
                 );
               })
             )}
-            
-            {/* 渲染玩家角色（绝对定位，避免重渲染整个迷宫） */}
-            <div 
-              className="player absolute rounded-full z-10"
-              style={{
-                left: `${(playerPosition.x / mazeWidth) * 100}%`,
-                top: `${(playerPosition.y / mazeHeight) * 100}%`,
-                width: '80%',
-                height: '80%',
-                transform: 'translate(-50%, -50%)',
-                backgroundColor: '#ffd700',
-                boxShadow: '0 0 10px rgba(255, 200, 0, 0.8)',
-                backgroundImage: 'radial-gradient(circle, #ffd700, #ffb347)',
-                transition: 'all 0.1s ease-out'
-              }}
-            ></div>
           </div>
 
           {/* 游戏结束弹窗 */}
