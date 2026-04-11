@@ -6,7 +6,7 @@ import CalligraphyGame from "@/pages/CalligraphyGame";
 
 export default function App() {
   return (
-    <Router basename="/trae-demo-wall-huzhou/">
+    <Router>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/fishing" element={<FishingGame />} />
