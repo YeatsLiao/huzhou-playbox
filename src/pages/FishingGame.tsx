@@ -377,25 +377,67 @@ export default function FishingGame() {
         
         {/* 鱼竿 */}
         {currentTool === 'rod' && (
+          <>
+            {/* 鱼竿指示器 */}
+            <div
+              className="absolute pointer-events-none z-20"
+              style={{
+                left: fishingRod.x - 15,
+                top: fishingRod.y - 15,
+                width: 30,
+                height: 30,
+                border: '2px solid white',
+                borderRadius: '50%',
+                background: 'rgba(255, 255, 255, 0.1)',
+                transition: 'all 0.1s ease'
+              }}
+            ></div>
+            
+            {/* 鱼竿 */}
+            <div
+              className="absolute pointer-events-none z-20"
+              style={{
+                left: fishingRod.x,
+                top: fishingRod.y,
+                transform: `rotate(${fishingRod.angle}deg)`,
+                transition: 'transform 0.1s ease'
+              }}
+            >
+              {/* 鱼竿 */}
+              <div className="w-3 h-60 bg-amber-800 transform -translate-y-full origin-bottom-left rounded-full"></div>
+              {/* 鱼线 */}
+              <div className="w-0.5 h-100 bg-gray-300 absolute bottom-0 left-1.5 transform -translate-y-full"></div>
+              {/* 鱼钩 */}
+              <div className="w-4 h-4 border-2 border-gray-800 absolute top-0 left-[-6px] transform rotate(45deg) bg-gray-200"></div>
+            </div>
+          </>
+        )}
+        
+        {/* 渔网指示器 */}
+        {currentTool === 'net' && (
           <div
             className="absolute pointer-events-none z-20"
             style={{
-              left: fishingRod.x,
-              top: fishingRod.y,
-              transform: `rotate(${fishingRod.angle}deg)`,
-              transition: 'transform 0.1s ease'
+              left: net.x - 25,
+              top: net.y - 25,
+              width: 50,
+              height: 50,
+              border: '2px solid white',
+              borderRadius: '50%',
+              background: net.active ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.1)',
+              transition: 'all 0.1s ease'
             }}
           >
-            {/* 鱼竿 */}
-            <div className="w-3 h-60 bg-amber-800 transform -translate-y-full origin-bottom-left rounded-full"></div>
-            {/* 鱼线 */}
-            <div className="w-0.5 h-100 bg-gray-300 absolute bottom-0 left-1.5 transform -translate-y-full"></div>
-            {/* 鱼钩 */}
-            <div className="w-4 h-4 border-2 border-gray-800 absolute top-0 left-[-6px] transform rotate(45deg) bg-gray-200"></div>
+            {/* 渔网网格 */}
+            <div className="absolute inset-0 grid grid-cols-3 grid-rows-3">
+              {Array(9).fill(0).map((_, i) => (
+                <div key={i} className="border border-white border-opacity-30"></div>
+              ))}
+            </div>
           </div>
         )}
         
-        {/* 渔网 */}
+        {/* 渔网展开动画 */}
         {currentTool === 'net' && net.active && (
           <div
             className="absolute pointer-events-none z-20"
