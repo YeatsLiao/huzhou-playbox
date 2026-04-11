@@ -8,8 +8,7 @@
     "build": "tsc -b --noEmit && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "check": "tsc -b --noEmit",
-    "deploy": "npm run build"
+    "check": "tsc -b --noEmit"
   },
   "dependencies": {
     "clsx": "^2.1.1",
