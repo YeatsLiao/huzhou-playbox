@@ -81,7 +81,7 @@ export default function CalligraphyGame() {
         
         // 绘制目标字符
         ctx.fillStyle = '#E8D7C3';
-        ctx.font = '100px Arial';
+        ctx.font = '150px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(currentCharacter, canvas.width / 2, canvas.height / 2);

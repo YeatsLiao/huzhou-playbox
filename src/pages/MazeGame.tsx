@@ -23,8 +23,8 @@ export default function MazeGame() {
   const [showScoreInput, setShowScoreInput] = useState(false);
 
   // 迷宫大小
-  const mazeWidth = 20;
-  const mazeHeight = 15;
+  const mazeWidth = 25;
+  const mazeHeight = 20;
 
   // 生成迷宫
   const generateMaze = useCallback(() => {
@@ -238,11 +238,13 @@ export default function MazeGame() {
 
           {/* 迷宫 */}
           <div 
-            className="border-4 border-gray-800 bg-green-500 p-2"
+            className="border-4 border-gray-800 bg-green-500 p-2 overflow-auto"
             style={{ 
               display: 'grid',
-              gridTemplateColumns: `repeat(${mazeWidth}, 30px)`,
-              gap: '2px'
+              gridTemplateColumns: `repeat(${mazeWidth}, 25px)`,
+              gap: '2px',
+              maxWidth: '90vw',
+              maxHeight: '70vh'
             }}
           >
             {maze.map((row, y) => 

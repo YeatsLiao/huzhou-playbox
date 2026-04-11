@@ -79,12 +79,27 @@ export default function FishingGame() {
     return () => clearTimeout(timer);
   }, [timeLeft]);
 
+  const [fishingRod, setFishingRod] = useState({ x: 0, y: 0, active: false });
+
+  // 处理鼠标移动
+  const handleMouseMove = (e: React.MouseEvent) => {
+    setFishingRod(prev => ({
+      ...prev,
+      x: e.clientX,
+      y: e.clientY
+    }));
+  };
+
   // 处理点击事件
   const handleClick = (e: React.MouseEvent) => {
     if (gameOver) return;
 
     const clickX = e.clientX;
     const clickY = e.clientY;
+
+    // 激活鱼竿动画
+    setFishingRod(prev => ({ ...prev, active: true }));
+    setTimeout(() => setFishingRod(prev => ({ ...prev, active: false })), 300);
 
     setFishes(prevFishes => {
       return prevFishes.filter(fish => {
@@ -142,8 +157,9 @@ export default function FishingGame() {
   return (
     <div 
       ref={gameRef}
-      className="min-h-screen bg-blue-400 cursor-crosshair"
+      className="min-h-screen bg-blue-400 cursor-none"
       onClick={handleClick}
+      onMouseMove={handleMouseMove}
     >
       {/* 游戏状态 */}
       <div className="fixed top-0 left-0 w-full p-4 bg-blue-900 text-white flex justify-between items-center z-10">
@@ -187,6 +203,24 @@ export default function FishingGame() {
             <div className="absolute top-1/2 left-0 w-1/3 h-1/3 bg-red-500 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
           </div>
         ))}
+        
+        {/* 鱼竿 */}
+        <div
+          className="absolute pointer-events-none z-20"
+          style={{
+            left: fishingRod.x,
+            top: fishingRod.y,
+            transform: fishingRod.active ? 'rotate(-30deg)' : 'rotate(0deg)',
+            transition: 'transform 0.1s ease'
+          }}
+        >
+          {/* 鱼竿 */}
+          <div className="w-2 h-40 bg-brown-600 transform -translate-y-full origin-bottom-left"></div>
+          {/* 鱼线 */}
+          <div className="w-0.5 h-60 bg-gray-300 absolute bottom-0 left-1 transform -translate-y-full"></div>
+          {/* 鱼钩 */}
+          <div className="w-4 h-4 border-2 border-gray-800 absolute top-0 left-[-6px] transform rotate(45deg)"></div>
+        </div>
 
         {/* 游戏结束弹窗 */}
         {showScoreInput && (
