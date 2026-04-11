@@ -102,6 +102,17 @@ export default function CalligraphyGame() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas) {
+      // 禁用默认的触摸行为，防止移动端滚动
+      const preventDefault = (e: TouchEvent) => {
+        if (e.target === canvas) {
+          e.preventDefault();
+        }
+      };
+      
+      canvas.addEventListener('touchstart', preventDefault, { passive: false });
+      canvas.addEventListener('touchmove', preventDefault, { passive: false });
+      canvas.addEventListener('touchend', preventDefault, { passive: false });
+      
       // 获取容器尺寸
       const container = canvas.parentElement;
       if (container) {
@@ -109,6 +120,12 @@ export default function CalligraphyGame() {
         canvas.height = container.clientHeight;
         drawBackground();
       }
+      
+      return () => {
+        canvas.removeEventListener('touchstart', preventDefault);
+        canvas.removeEventListener('touchmove', preventDefault);
+        canvas.removeEventListener('touchend', preventDefault);
+      };
     }
   }, [currentCharacter]);
 

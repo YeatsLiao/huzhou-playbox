@@ -113,34 +113,27 @@ export default function MazeGame() {
     return () => clearInterval(timer);
   }, [gameStarted, gameOver]);
 
-  // 处理键盘事件
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (!gameStarted || gameOver) return;
+  // 移动逻辑提取为独立函数，以便复用
+  const movePlayer = useCallback((direction: 'up' | 'down' | 'left' | 'right') => {
+    if (!gameStarted || gameOver) return;
 
-      const key = e.key.toLowerCase();
-      let newX = playerPosition.x;
-      let newY = playerPosition.y;
+    setPlayerPosition(prev => {
+      let newX = prev.x;
+      let newY = prev.y;
 
-      switch (key) {
-        case 'w':
-        case 'arrowup':
+      switch (direction) {
+        case 'up':
           newY -= 1;
           break;
-        case 's':
-        case 'arrowdown':
+        case 'down':
           newY += 1;
           break;
-        case 'a':
-        case 'arrowleft':
+        case 'left':
           newX -= 1;
           break;
-        case 'd':
-        case 'arrowright':
+        case 'right':
           newX += 1;
           break;
-        default:
-          return;
       }
 
       // 边界检查和碰撞检测
@@ -149,19 +142,45 @@ export default function MazeGame() {
         newY >= 0 && newY < mazeHeight &&
         maze[newY][newX] !== 'wall'
       ) {
-        setPlayerPosition({ x: newX, y: newY });
-
         // 检查是否到达终点
         if (maze[newY][newX] === 'end') {
           setGameOver(true);
           setShowScoreInput(true);
         }
+        return { x: newX, y: newY };
+      }
+      return prev;
+    });
+  }, [gameStarted, gameOver, maze, mazeWidth, mazeHeight]);
+
+  // 处理键盘事件
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      const key = e.key.toLowerCase();
+      
+      switch (key) {
+        case 'w':
+        case 'arrowup':
+          movePlayer('up');
+          break;
+        case 's':
+        case 'arrowdown':
+          movePlayer('down');
+          break;
+        case 'a':
+        case 'arrowleft':
+          movePlayer('left');
+          break;
+        case 'd':
+        case 'arrowright':
+          movePlayer('right');
+          break;
       }
     };
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [playerPosition, maze, gameStarted, gameOver, mazeWidth, mazeHeight]);
+  }, [movePlayer]);
 
   // 保存得分
   const saveScore = () => {
@@ -238,11 +257,11 @@ export default function MazeGame() {
 
           {/* 迷宫 */}
           <div 
-            className="border-4 border-gray-800 bg-green-500 p-4 mb-8"
+            className="border-4 border-gray-800 bg-green-500 p-4 mb-4"
             style={{ 
               width: '90vw',
               maxWidth: '1000px',
-              height: '60vh'
+              height: '50vh'
             }}
           >
             <div
@@ -289,6 +308,48 @@ export default function MazeGame() {
             )}
             </div>
           </div>
+
+          {/* 移动端虚拟方向键 */}
+          {gameStarted && !gameOver && (
+            <div className="mb-8 grid grid-cols-3 gap-2 w-48 mx-auto md:hidden">
+              <div className="col-start-2">
+                <button 
+                  className="w-full aspect-square bg-gray-800 text-white rounded-lg active:bg-gray-600 shadow-[0_4px_0_rgb(55,65,81)] active:shadow-[0_0px_0_rgb(55,65,81)] active:translate-y-1 flex items-center justify-center text-2xl font-bold touch-manipulation"
+                  onClick={(e) => { e.preventDefault(); movePlayer('up'); }}
+                  onTouchStart={(e) => { e.preventDefault(); movePlayer('up'); }}
+                >
+                  ↑
+                </button>
+              </div>
+              <div className="col-start-1 row-start-2">
+                <button 
+                  className="w-full aspect-square bg-gray-800 text-white rounded-lg active:bg-gray-600 shadow-[0_4px_0_rgb(55,65,81)] active:shadow-[0_0px_0_rgb(55,65,81)] active:translate-y-1 flex items-center justify-center text-2xl font-bold touch-manipulation"
+                  onClick={(e) => { e.preventDefault(); movePlayer('left'); }}
+                  onTouchStart={(e) => { e.preventDefault(); movePlayer('left'); }}
+                >
+                  ←
+                </button>
+              </div>
+              <div className="col-start-2 row-start-2">
+                <button 
+                  className="w-full aspect-square bg-gray-800 text-white rounded-lg active:bg-gray-600 shadow-[0_4px_0_rgb(55,65,81)] active:shadow-[0_0px_0_rgb(55,65,81)] active:translate-y-1 flex items-center justify-center text-2xl font-bold touch-manipulation"
+                  onClick={(e) => { e.preventDefault(); movePlayer('down'); }}
+                  onTouchStart={(e) => { e.preventDefault(); movePlayer('down'); }}
+                >
+                  ↓
+                </button>
+              </div>
+              <div className="col-start-3 row-start-2">
+                <button 
+                  className="w-full aspect-square bg-gray-800 text-white rounded-lg active:bg-gray-600 shadow-[0_4px_0_rgb(55,65,81)] active:shadow-[0_0px_0_rgb(55,65,81)] active:translate-y-1 flex items-center justify-center text-2xl font-bold touch-manipulation"
+                  onClick={(e) => { e.preventDefault(); movePlayer('right'); }}
+                  onTouchStart={(e) => { e.preventDefault(); movePlayer('right'); }}
+                >
+                  →
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* 游戏结束弹窗 */}
           {showScoreInput && (
