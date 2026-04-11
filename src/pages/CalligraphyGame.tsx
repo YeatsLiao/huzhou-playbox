@@ -24,11 +24,14 @@ export default function CalligraphyGame() {
   const [gameOver, setGameOver] = useState(false);
   const [playerName, setPlayerName] = useState("");
   const [showScoreInput, setShowScoreInput] = useState(false);
-  const [characters] = useState<string[]>(["湖", "州", "太", "湖", "竹", "林"]);
+  
+  // 湖州名诗：《吴兴杂诗》 - 阮元
+  const poem = "交流四水抱城斜，散作千溪遍万家。深处种菱浅种稻，不深不浅种荷花。";
+  const [poemCharacters] = useState<string[]>(poem.split(''));
 
   // 初始化游戏
   useEffect(() => {
-    const randomChar = characters[Math.floor(Math.random() * characters.length)];
+    const randomChar = poemCharacters[Math.floor(Math.random() * poemCharacters.length)];
     setCurrentCharacter(randomChar);
     clearCanvas();
   }, []);
@@ -79,9 +82,11 @@ export default function CalligraphyGame() {
           ctx.stroke();
         }
         
-        // 绘制目标字符
+        // 绘制目标字符（增大字体大小）
         ctx.fillStyle = '#E8D7C3';
-        ctx.font = '150px Arial';
+        // 根据画布大小动态调整字体大小
+        const fontSize = Math.min(canvas.width, canvas.height) * 0.4;
+        ctx.font = `${fontSize}px Arial`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(currentCharacter, canvas.width / 2, canvas.height / 2);
@@ -93,12 +98,14 @@ export default function CalligraphyGame() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas) {
-      const container = canvas.parentElement;
-      if (container) {
-        canvas.width = container.clientWidth * 0.9;
-        canvas.height = container.clientHeight * 0.8;
-        drawBackground();
-      }
+      // 获取窗口尺寸，减去顶部导航栏高度
+      const windowHeight = window.innerHeight - 100; // 100px 用于顶部导航栏
+      const windowWidth = window.innerWidth - 40; // 40px 用于左右边距
+      
+      // 设置画布大小为窗口的大部分区域
+      canvas.width = windowWidth;
+      canvas.height = windowHeight * 0.8; // 留一些空间给控制按钮
+      drawBackground();
     }
   }, [currentCharacter]);
 
@@ -254,13 +261,19 @@ export default function CalligraphyGame() {
 
   // 重新开始
   const restartGame = () => {
-    const randomChar = characters[Math.floor(Math.random() * characters.length)];
+    const randomChar = poemCharacters[Math.floor(Math.random() * poemCharacters.length)];
     setCurrentCharacter(randomChar);
     clearCanvas();
   };
 
+  // 选择指定字符
+  const selectCharacter = (char: string) => {
+    setCurrentCharacter(char);
+    clearCanvas();
+  };
+
   return (
-    <div className="min-h-screen bg-amber-50 font-pixel">
+    <div className="min-h-screen bg-amber-50 font-pixel overflow-hidden">
       {/* 游戏状态 */}
       <div className="fixed top-0 left-0 w-full p-4 bg-amber-800 text-white flex justify-between items-center z-10">
         <div className="text-xl font-bold">湖笔书法挑战</div>
@@ -277,22 +290,38 @@ export default function CalligraphyGame() {
       </div>
 
       {/* 游戏区域 */}
-      <div className="container mx-auto px-4 py-20">
-        <div className="flex flex-col items-center">
-          {/* 游戏说明 */}
+      <div className="w-full h-screen pt-20">
+        <div className="flex flex-col items-center h-full">
+          {/* 游戏说明和名诗 */}
           {!gameOver && (
-            <div className="bg-white rounded-lg border-4 border-gray-800 shadow-lg p-6 mb-8 max-w-2xl text-center">
+            <div className="bg-white rounded-lg border-4 border-gray-800 shadow-lg p-6 mb-4 w-full max-w-4xl text-center">
               <h2 className="text-2xl font-bold mb-4">游戏说明</h2>
               <p className="mb-4">在宣纸上用鼠标或触摸书写下方的汉字，尽量写得规范美观。</p>
               <p className="mb-4">书写完成后点击"评分"按钮，系统会根据你的书写质量进行评分。</p>
+              
+              {/* 湖州名诗 */}
+              <div className="mt-6">
+                <h3 className="text-xl font-bold mb-2">湖州名诗：《吴兴杂诗》 - 阮元</h3>
+                <div className="flex flex-wrap justify-center gap-2 mt-4">
+                  {poemCharacters.map((char, index) => (
+                    <button
+                      key={index}
+                      className={`text-xl p-2 rounded ${currentCharacter === char ? 'bg-amber-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
+                      onClick={() => selectCharacter(char)}
+                    >
+                      {char}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
 
           {/* 画布 */}
-          <div className="border-4 border-gray-800 bg-white p-4 mb-8 w-full max-w-3xl">
+          <div className="border-4 border-gray-800 bg-white p-4 mb-4 w-full mx-4 flex-grow">
             <canvas
               ref={canvasRef}
-              className="border-2 border-gray-300 bg-[#F5E6D3] cursor-crosshair"
+              className="border-2 border-gray-300 bg-[#F5E6D3] cursor-crosshair w-full h-full"
               onMouseDown={startDrawing}
               onMouseMove={draw}
               onMouseUp={stopDrawing}
@@ -304,7 +333,7 @@ export default function CalligraphyGame() {
           </div>
 
           {/* 控制按钮 */}
-          <div className="flex space-x-4 mb-8">
+          <div className="flex flex-wrap justify-center space-x-4 mb-4">
             <button
               className="bg-amber-500 hover:bg-amber-700 text-white font-bold py-2 px-6 rounded border-2 border-amber-700"
               onClick={clearCanvas}
@@ -328,7 +357,7 @@ export default function CalligraphyGame() {
               className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded border-2 border-purple-700"
               onClick={restartGame}
             >
-              换个字
+              随机选字
             </button>
           </div>
 
