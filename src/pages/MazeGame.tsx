@@ -238,16 +238,21 @@ export default function MazeGame() {
 
           {/* 迷宫 */}
           <div 
-            className="border-4 border-gray-800 bg-green-500 p-4 mb-8 overflow-hidden"
+            className="border-4 border-gray-800 bg-green-500 p-4 mb-8"
             style={{ 
-              display: 'grid',
-              gridTemplateColumns: `repeat(${mazeWidth}, 1fr)`,
-              gap: '2px',
               width: '90vw',
               maxWidth: '1000px',
-              height: '60vh'
+              height: '60vh',
+              overflow: 'auto'
             }}
           >
+            <div
+              style={{ 
+                display: 'grid',
+                gridTemplateColumns: `repeat(${mazeWidth}, 25px)`,
+                gap: '2px'
+              }}
+            >
             {maze.map((row, y) => 
               row.map((cell, x) => {
                 const isPlayer = x === playerPosition.x && y === playerPosition.y;
@@ -280,6 +285,7 @@ export default function MazeGame() {
                 );
               })
             )}
+            </div>
           </div>
 
           {/* 游戏结束弹窗 */}
