@@ -238,10 +238,10 @@ export default function MazeGame() {
 
           {/* 迷宫 */}
           <div 
-            className="border-4 border-gray-800 bg-green-500 p-4 mb-8"
+            className="border-4 border-gray-800 bg-green-500 p-4 mb-8 overflow-hidden"
             style={{ 
               display: 'grid',
-              gridTemplateColumns: `repeat(${mazeWidth}, minmax(20px, 1fr))`,
+              gridTemplateColumns: `repeat(${mazeWidth}, 1fr)`,
               gap: '2px',
               width: '90vw',
               maxWidth: '1000px',
