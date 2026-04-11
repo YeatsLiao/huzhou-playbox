@@ -227,17 +227,23 @@ export default function CalligraphyGame() {
         const totalPixels = canvas.width * canvas.height;
         const coverage = (blackPixels / totalPixels) * 100;
         
-        // 计算得分（0-100）- 更宽松的计算方式
-        let calculatedScore = Math.min(Math.round(coverage * 4), 100);
+        // 计算得分（0-100）- 根据实际黑像素面积动态计算，避免全保底
+        // 一些非常简单的字黑像素覆盖率可能只有 5% 到 10%，复杂字可能 20%
+        // 我们动态放大，但如果不写字就是0分
+        let calculatedScore = 0;
         
-        // 确保最低分数
-        calculatedScore = Math.max(calculatedScore, 60);
-        
-        // 根据笔画数量调整得分 - 更宽松
-        if (strokes.length < 1) {
-          calculatedScore = Math.max(calculatedScore - 20, 50);
-        } else if (strokes.length > 15) {
-          calculatedScore = Math.max(calculatedScore - 10, 50);
+        if (strokes.length > 0) {
+          calculatedScore = Math.min(Math.round(coverage * 8), 98);
+          // 稍微加点随机性，模拟"书法意境"
+          calculatedScore += Math.floor(Math.random() * 5);
+          calculatedScore = Math.min(calculatedScore, 100);
+          
+          // 根据笔画数量调整得分
+          if (strokes.length < 1) {
+            calculatedScore = 0;
+          } else if (strokes.length > 15) {
+            calculatedScore = Math.max(calculatedScore - 10, 10);
+          }
         }
         
         setScore(calculatedScore);
@@ -320,8 +326,8 @@ export default function CalligraphyGame() {
       </div>
 
       {/* 游戏区域 */}
-      <div className="w-full pt-20 pb-10">
-        <div className="flex flex-col items-center">
+      <div className="w-full pt-20 pb-10 min-h-screen flex flex-col">
+        <div className="flex flex-col items-center flex-1 w-full max-w-4xl mx-auto px-2">
           {/* 游戏说明和名诗 */}
           {!gameOver && (
             <div className="bg-white rounded-lg border-4 border-gray-800 shadow-lg p-6 mb-4 w-full max-w-4xl text-center">
@@ -348,11 +354,11 @@ export default function CalligraphyGame() {
           )}
 
           {/* 画布 */}
-          <div className="border-4 border-gray-800 bg-white p-4 mb-6 w-full mx-4 max-w-4xl">
-            <div className="relative" style={{ height: '60vh' }}>
+          <div className="border-4 border-gray-800 bg-white p-2 md:p-4 mb-6 w-[95%] md:w-full mx-auto max-w-4xl shrink-0">
+            <div className="relative w-full aspect-square md:aspect-video max-h-[50vh]">
               <canvas
                 ref={canvasRef}
-                className="border-2 border-gray-300 bg-[#F5E6D3] cursor-crosshair w-full h-full"
+                className="border-2 border-gray-300 bg-[#F5E6D3] cursor-crosshair w-full h-full block touch-none"
                 onMouseDown={startDrawing}
                 onMouseMove={draw}
                 onMouseUp={stopDrawing}
@@ -365,31 +371,31 @@ export default function CalligraphyGame() {
           </div>
 
           {/* 控制按钮 */}
-          <div className="flex flex-wrap justify-center space-x-4 mb-6 w-full max-w-4xl">
+          <div className="flex flex-wrap justify-center gap-3 mb-6 w-full max-w-4xl px-4">
             <button
-              className="bg-amber-500 hover:bg-amber-700 text-white font-bold py-2 px-6 rounded border-2 border-amber-700"
+              className="bg-amber-500 hover:bg-amber-700 text-white font-bold py-2 px-4 md:px-6 rounded border-2 border-amber-700 text-sm md:text-base flex-1 min-w-[100px]"
               onClick={clearCanvas}
             >
               重写
             </button>
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded border-2 border-blue-700"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 md:px-6 rounded border-2 border-blue-700 text-sm md:text-base flex-1 min-w-[100px]"
               onClick={calculateScore}
               disabled={gameOver}
             >
               评分
             </button>
             <button
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-6 rounded border-2 border-green-700"
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 md:px-6 rounded border-2 border-green-700 text-sm md:text-base flex-1 min-w-[100px]"
               onClick={saveWork}
             >
               保存作品
             </button>
             <button
-              className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded border-2 border-purple-700"
+              className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 md:px-6 rounded border-2 border-purple-700 text-sm md:text-base flex-1 min-w-[100px]"
               onClick={restartGame}
             >
-              随机选字
+              换字
             </button>
           </div>
 

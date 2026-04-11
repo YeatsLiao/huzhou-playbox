@@ -87,75 +87,84 @@ export default function Home() {
         </div>
 
         {/* 得分排行区域 */}
-        <div className="bg-white rounded-lg border-4 border-gray-800 shadow-lg p-6 mb-8">
+        <div className="bg-white rounded-lg border-4 border-gray-800 shadow-lg p-6 mb-8 overflow-x-auto">
           <h2 className="text-2xl font-bold mb-4 text-center pixel-text">得分排行</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="flex flex-col md:flex-row gap-6 min-w-min">
             {/* 太湖捕鱼排行 */}
-            <div className="bg-blue-50 rounded-lg p-4 border-2 border-blue-200">
+            <div className="bg-blue-50 rounded-lg p-4 border-2 border-blue-200 flex-1 min-w-[280px]">
               <h3 className="text-lg font-bold mb-2 text-blue-600">太湖捕鱼</h3>
-              <table className="w-full">
+              <table className="w-full text-sm md:text-base">
                 <thead>
                   <tr className="border-b border-blue-200">
-                    <th className="text-left">排名</th>
-                    <th className="text-left">玩家</th>
-                    <th className="text-left">得分</th>
+                    <th className="text-left pb-2 w-12">排名</th>
+                    <th className="text-left pb-2">玩家</th>
+                    <th className="text-left pb-2 w-16">得分</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {scores.fishing.slice(0, 3).map((score: any, index: number) => (
-                    <tr key={index} className="border-b border-blue-100">
-                      <td>{index + 1}</td>
-                      <td>{score.name}</td>
-                      <td>{score.score}</td>
+                  {scores.fishing.slice(0, 5).map((score: any, index: number) => (
+                    <tr key={index} className="border-b border-blue-100 last:border-0">
+                      <td className="py-2">{index + 1}</td>
+                      <td className="py-2 truncate max-w-[100px]">{score.name}</td>
+                      <td className="py-2 font-bold">{score.score}</td>
                     </tr>
                   ))}
+                  {scores.fishing.length === 0 && (
+                    <tr><td colSpan={3} className="text-center py-4 text-gray-500">暂无数据</td></tr>
+                  )}
                 </tbody>
               </table>
             </div>
 
             {/* 莫干山竹林探险排行 */}
-            <div className="bg-green-50 rounded-lg p-4 border-2 border-green-200">
+            <div className="bg-green-50 rounded-lg p-4 border-2 border-green-200 flex-1 min-w-[280px]">
               <h3 className="text-lg font-bold mb-2 text-green-600">莫干山竹林探险</h3>
-              <table className="w-full">
+              <table className="w-full text-sm md:text-base">
                 <thead>
                   <tr className="border-b border-green-200">
-                    <th className="text-left">排名</th>
-                    <th className="text-left">玩家</th>
-                    <th className="text-left">时间(秒)</th>
+                    <th className="text-left pb-2 w-12">排名</th>
+                    <th className="text-left pb-2">玩家</th>
+                    <th className="text-left pb-2 w-20">时间(秒)</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {scores.maze.slice(0, 3).map((score: any, index: number) => (
-                    <tr key={index} className="border-b border-green-100">
-                      <td>{index + 1}</td>
-                      <td>{score.name}</td>
-                      <td>{score.time}</td>
+                  {scores.maze.slice(0, 5).map((score: any, index: number) => (
+                    <tr key={index} className="border-b border-green-100 last:border-0">
+                      <td className="py-2">{index + 1}</td>
+                      <td className="py-2 truncate max-w-[100px]">{score.name}</td>
+                      <td className="py-2 font-bold">{score.time}</td>
                     </tr>
                   ))}
+                  {scores.maze.length === 0 && (
+                    <tr><td colSpan={3} className="text-center py-4 text-gray-500">暂无数据</td></tr>
+                  )}
                 </tbody>
               </table>
             </div>
 
             {/* 湖笔书法挑战排行 */}
-            <div className="bg-amber-50 rounded-lg p-4 border-2 border-amber-200">
+            <div className="bg-amber-50 rounded-lg p-4 border-2 border-amber-200 flex-1 min-w-[280px]">
               <h3 className="text-lg font-bold mb-2 text-amber-600">湖笔书法挑战</h3>
-              <table className="w-full">
+              <table className="w-full text-sm md:text-base">
                 <thead>
                   <tr className="border-b border-amber-200">
-                    <th className="text-left">排名</th>
-                    <th className="text-left">玩家</th>
-                    <th className="text-left">得分</th>
+                    <th className="text-left pb-2 w-12">排名</th>
+                    <th className="text-left pb-2">玩家</th>
+                    <th className="text-left pb-2 w-16">得分</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {scores.calligraphy.slice(0, 3).map((score: any, index: number) => (
-                    <tr key={index} className="border-b border-amber-100">
-                      <td>{index + 1}</td>
-                      <td>{score.name}</td>
-                      <td>{score.score}</td>
+                  {scores.calligraphy.slice(0, 5).map((score: any, index: number) => (
+                    <tr key={index} className="border-b border-amber-100 last:border-0">
+                      <td className="py-2">{index + 1}</td>
+                      <td className="py-2 truncate max-w-[100px]">{score.name}</td>
+                      <td className="py-2 font-bold">{score.score}</td>
                     </tr>
                   ))}
+                  {scores.calligraphy.length === 0 && (
+                    <tr><td colSpan={3} className="text-center py-4 text-gray-500">暂无数据</td></tr>
+                  )}
                 </tbody>
               </table>
             </div>
